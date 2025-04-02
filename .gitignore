@@ -1,0 +1,7 @@
+data/OPMED/masks
+data/OPMED/test
+data/OPMED/train
+data/*.zip
+__pycache__
+weights/thor/thor
+wandb

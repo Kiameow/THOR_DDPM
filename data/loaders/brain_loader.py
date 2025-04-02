@@ -16,7 +16,7 @@ class Flip:
         return torch.tensor((img.astype(np.float32)).copy())
 
 class BrainLoader(DefaultDataset):
-    def __init__(self, data_dir, file_type='', label_dir=None, mask_dir=None,  target_size=(256, 256), test=False):
+    def __init__(self, data_dir, file_type='*.png', label_dir=None, mask_dir=None,  target_size=(256, 256), test=False):
         self.target_size = target_size
         self.RES = transforms.Resize(self.target_size)
         super(BrainLoader, self).__init__(data_dir, file_type, label_dir, mask_dir, target_size, test)
