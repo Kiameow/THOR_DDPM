@@ -12,7 +12,7 @@ experiment:
   weights: #'PATH_TO_WEIGHTS/latest_model.pt' # 1500 Gaussian
 
 
-device: gpu
+device: cpu
 configurator:
   module_name: core.Configurator
   class_name: DLConfigurator
