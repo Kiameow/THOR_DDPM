@@ -122,7 +122,7 @@ downstream_tasks:
 # ATLAS STROKE DETECTION
 #####
  detection:
-   module_name: projects.thor.DownstreamEvaluatorAtlas
+   module_name: projects.thor.DownstreamEvaluatorOPMED
    class_name: PDownstreamEvaluator
    checkpoint_path: *checkpoint_path
    global_detection: True
