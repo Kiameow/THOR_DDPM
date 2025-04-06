@@ -172,7 +172,7 @@ class DDPM(nn.Module):
             
 
     def get_thor_anomaly(self, inputs):
-        x_rec, z_dict = self.sample_from_image_interpol(inputs, noise_level=self.noise_level_recon, save_intermediates=True, intermediate_steps=self.intermediate_steps, t_harmonization=self.t_harmonization, t_visualization=self.t_visualization)
+        x_rec, z_dict = self.sample_from_image_interpol(inputs, noise_level=self.noise_level_recon, save_intermediates=True, intermediate_steps=None, t_harmonization=self.t_harmonization, t_visualization=self.t_visualization)
         # self.print_intermediates(z_dict['inter_ddpm'], 'Intermediates (DDPM)', self.img_ct, 1)
         # self.print_intermediates(z_dict['z'], 'Intermediates (THOR)', self.img_ct, 1)
         # self.print_intermediates(z_dict['inter_gt'], 'Intermediates (GT)', self.img_ct, 1)
