@@ -53,3 +53,12 @@ class BrainLoader(DefaultDataset):
                                              ,self.RES
                                             ])#, Binarize()])
         return default_t_label
+    
+    def get_label_transform_test(self):
+        default_t_label = transforms.Compose([ReadImage(),  To01()
+                                             ,Pad((1, 1))
+                                             ,AddChannelIfNeeded()
+                                             ,AssertChannelFirst()
+                                             ,self.RES
+                                            ])#, Binarize()])
+        return default_t_label
