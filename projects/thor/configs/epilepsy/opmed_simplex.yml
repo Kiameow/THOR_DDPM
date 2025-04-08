@@ -1,4 +1,4 @@
-name: THOR [Gaussian] AD 350
+name: THOR [Simplex] AD 350
 target_size: &target_size !!python/tuple [128, 128]
 train_batch_size: &tbatch_size 16
 downstream_batch_size: &dbatch_size 1
