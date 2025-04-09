@@ -2,8 +2,8 @@ import os
 import csv
 
 # Configuration
-FOLDER_PATH = 'data/OPMED/masks'  # Target folder (relative to the script's location)
-OUTPUT_CSV = 'data/OPMED/masks.csv'  # Output CSV filename
+FOLDER_PATH = 'data/IDEAS/masks'  # Target folder (relative to the script's location)
+OUTPUT_CSV = 'data/IDEAS/masks.csv'  # Output CSV filename
 
 # Collect file paths with relative paths
 file_paths = []
