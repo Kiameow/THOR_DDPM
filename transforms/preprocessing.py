@@ -29,7 +29,7 @@ class ReadImage(Transform):
             img = (img * 255).astype(np.uint8)
             return torch.tensor(img)
         elif '.jpeg' in path or '.jpg' in path or '.png' in path:
-            PIL_image = PIL.Image.open(path)#.convert('L')
+            PIL_image = PIL.Image.open(path).convert('L')
             # The image can be converted to tensor using
             tensor_image = torch.squeeze(transform.to_tensor(PIL_image))
             # print(f'Read:: Min: {torch.min(tensor_image)}, Max: {torch.max(tensor_image)}, Avg: '
@@ -242,37 +242,45 @@ class Pad(Transform):
     Pad with zeros
     """
     backend = [TransformBackends.TORCH, TransformBackends.NUMPY]
-    def __init__(self, pid= (1,1), type='center'):
+    def __init__(self, pid=(1,1), type='center'):
         self.pid = pid
         self.type = type
 
     def __call__(self, img: NdarrayOrTensor) -> NdarrayOrTensor:
-        img = torch.squeeze(img)
-        max_dim = max(img.shape[0], img.shape[1])
-        z = 0
-        if len(img.shape) > 2:
-            max_dim = max(max_dim, img.shape[2])
-            z = max_dim - img.shape[2]
+        # 移除单通道维度需谨慎，可能导致维度信息丢失
+        # 建议根据具体情况处理，这里假设输入为 (C, H, W) 或 (H, W)
+        if img.ndim == 3 and img.shape[0] == 1:  # 单通道特殊情况处理
+            img = torch.squeeze(img, dim=0)  # 保持至少二维
+        
+        # 始终取最后两个维度作为高宽
+        h, w = img.shape[-2], img.shape[-1]
+        max_dim = max(h, w)
+        x = max_dim - h  # 高度需要填充的量
+        y = max_dim - w  # 宽度需要填充的量
 
-        x = max_dim - img.shape[0]
-        y = max_dim - img.shape[1]
-        if self.type == 'center':
-            self.pid = (int(z/2), z-int(z/2), int(y/2), y-int(y/2), int(x/2), x-int(x/2)) if len(img.shape) > 2\
-                else (int(y / 2), y - int(y / 2), int(x / 2), x - int(x / 2))
-        elif self.type == 'end':
-            self.pid = (z, 0, y, 0, x, 0) if len(img.shape) > 2 else (y, 0, x, 0)
-        else:
-            self.pid = (0, z, 0, y, 0, x) if len(img.shape) > 2 else (0, y, 0, x)
+        # 根据维度确定填充参数
+        if img.ndim == 3:  # 三维数据 (C, H, W)
+            c = img.shape[0]
+            if self.type == 'center':
+                pad_h = (x // 2, x - x // 2)
+                pad_w = (y // 2, y - y // 2)
+                self.pid = (pad_w[0], pad_w[1], pad_h[0], pad_h[1], 0, 0)
+            elif self.type == 'end':
+                self.pid = (0, y, 0, x, 0, 0)
+            else:  # 'start'
+                self.pid = (y, 0, x, 0, 0, 0)
+        else:  # 二维数据 (H, W)
+            if self.type == 'center':
+                pad_h = (x // 2, x - x // 2)
+                pad_w = (y // 2, y - y // 2)
+                self.pid = (pad_w[0], pad_w[1], pad_h[0], pad_h[1])
+            elif self.type == 'end':
+                self.pid = (0, y, 0, x)
+            else:
+                self.pid = (y, 0, x, 0)
+
         pad_val = torch.min(img)
-        # self.pid = (3,3,0,0,0,0)
         img_pad = F.pad(img, self.pid, 'constant', pad_val)
-        # img_pad[img_pad > 0.95] = pad_val
-        # print(f'PadAmount:: X: {x}, Y: {y}, Z: {z}')
-
-        # print(f'PadBefore:: Min: {torch.min(img)}, Max: {torch.max(img)}, Avf: {torch.mean(img)}')
-        # print(f'PadAfter:: Min: {torch.min(img_pad)}, Max: {torch.max(img_pad)}, Avf: {torch.mean(img_pad)}')
-
-
         return img_pad
 
 class Resize3D(Transform):

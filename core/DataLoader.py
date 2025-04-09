@@ -47,13 +47,13 @@ class DefaultDataset(Dataset):
         if label_dir is not None:
             if 'csv' in label_dir[0]:
                 self.label_files = get_data_from_csv(label_dir)
-                print("hhhhhhh")
             else:
-                print("#############ssssss")
                 print(label_dir[0] + file_type)
                 self.label_files = [glob.glob(label_dir_i + file_type) for label_dir_i in label_dir]
                 
             self.seg_t = self.get_label_transform_test() if test else self.get_label_transform()
+        
+        
 
     def get_image_transform(self):
         """
@@ -64,6 +64,7 @@ class DefaultDataset(Dataset):
         return default_t
 
     def get_image_transform_test(self):
+        print("transform test")
         default_t = transforms.Compose([ReadImage(), To01(), AddChannelIfNeeded(),
                                         AssertChannelFirst(), transforms.Resize(self.target_size)])
         return default_t
