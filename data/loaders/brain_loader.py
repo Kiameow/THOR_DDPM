@@ -1,6 +1,7 @@
 from core.DataLoader import DefaultDataset
 import torchvision.transforms as transforms
 from transforms.preprocessing import *
+from torchvision.utils import save_image
 
 
 class Flip:
@@ -20,6 +21,11 @@ class BrainLoader(DefaultDataset):
         self.target_size = target_size
         self.RES = transforms.Resize(self.target_size)
         super(BrainLoader, self).__init__(data_dir, file_type, label_dir, mask_dir, target_size, test)
+        
+        # im = self.files[0]
+        # im_t = self.get_image_transform_test()
+        # image = im_t(im)
+        # save_image(image, "example.png")
 
 
     def get_image_transform(self):
